@@ -27,7 +27,7 @@ def obter_palpites():
         }
         response = requests.get(url, headers=headers, timeout=10)
         soup = BeautifulSoup(response.text, 'html.parser')
-
+# commit for test
         jogos = soup.find_all("a", class_="match")
         palpites = []
 
