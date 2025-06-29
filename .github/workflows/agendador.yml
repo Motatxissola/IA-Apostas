@@ -1,26 +1,23 @@
-name: Executar Palpites Diariamente
+name: Enviar palpites via WhatsApp
 
 on:
   schedule:
-    - cron: '0 8 * * *'  # 09:00 em Angola (UTC+1)
-  workflow_dispatch:
+    - cron: '0 8 * * *'  # Roda todos os dias às 08:00 UTC (09:00 em Angola)
+  workflow_dispatch:  # Permite rodar manualmente
 
 jobs:
-  rodar-script:
+  enviar_palpites:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Baixar repositório
-      uses: actions/checkout@v3
+      - name: Clonar o repositório
+        uses: actions/checkout@v3
 
-    - name: Instalar dependências
-      run: |
-        pip install -r requirements.txt
+      - name: Instalar dependências
+        run: pip install -r requirements.txt
 
-    - name: Criar arquivo .env
-      run: |
-        echo "TWILIO_ACCOUNT_SID=${{ secrets.TWILIO_ACCOUNT_SID }}" >> .env
-        echo "TWILIO_AUTH_TOKEN=${{ secrets.TWILIO_AUTH_TOKEN }}" >> .env
-
-    - name: Executar script
-      run: python palpites.py
+      - name: Executar o script de palpites
+        env:
+          TWILIO_ACCOUNT_SID: ${{ secrets.TWILIO_ACCOUNT_SID }}
+          TWILIO_AUTH_TOKEN: ${{ secrets.TWILIO_AUTH_TOKEN }}
+        run: python palpites.py
