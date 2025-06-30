@@ -1,12 +1,18 @@
-name: Enviar Palpites Diários
+name: IA de Palpites Esportivos
 
 on:
   schedule:
-    - cron: '0 8 * * *'  # Roda às 08:00 UTC (09:00 em Angola)
-  workflow_dispatch:     # Permite executar manualmente também
+    - cron: '0 8 * * *'   # 09h Angola (UTC+1)
+    - cron: '0 10 * * *'  # 11h Angola
+    - cron: '0 13 * * *'  # 14h Angola
+    - cron: '0 15 * * *'  # 16h Angola
+    - cron: '0 17 * * *'  # 18h Angola
+    - cron: '0 19 * * *'  # 20h Angola
+    - cron: '0 21 * * *'  # 22h Angola
+  workflow_dispatch:
 
 jobs:
-  build:
+  executar-palpites:
     runs-on: ubuntu-latest
 
     steps:
@@ -19,13 +25,12 @@ jobs:
         python-version: '3.11'
 
     - name: Instalar dependências
-      run: |
-        pip install -r requirements.txt
+      run: pip install -r requirements.txt
 
-    - name: Criar .env
-      run: |
-        echo "TWILIO_ACCOUNT_SID=${{ secrets.TWILIO_ACCOUNT_SID }}" >> .env
-        echo "TWILIO_AUTH_TOKEN=${{ secrets.TWILIO_AUTH_TOKEN }}" >> .env
-
-    - name: Executar script de palpites
+    - name: Rodar IA de Palpites
+      env:
+        TWILIO_ACCOUNT_SID: ${{ secrets.TWILIO_ACCOUNT_SID }}
+        TWILIO_AUTH_TOKEN: ${{ secrets.TWILIO_AUTH_TOKEN }}
+        TWILIO_PHONE_NUMBER: ${{ secrets.TWILIO_PHONE_NUMBER }}
+        DESTINATARIOS: ${{ secrets.DESTINATARIOS }}
       run: python palpites.py
